@@ -16,47 +16,57 @@ xVec = linspace(min(xSample(:)), max(xSample(:)), size(xSample,2));
 yVec = linspace(min(ySample(:)), max(ySample(:)), size(ySample,1));
 [X, Y] = meshgrid(xVec, yVec);
 
+% Define finer grid (e.g., 2x finer)
+scaleFactor = 1;
+[X_fine, Y_fine] = meshgrid( ...
+    linspace(min(xVec), max(xVec), scaleFactor * size(X,2)), ...
+    linspace(min(yVec), max(yVec), scaleFactor * size(Y,1)) ...
+);
+interpolationMethod = 'linear';
+
+
 % Preallocate
 mag = cell(nFrames, 1);
 
-% Plot loop
 figure(1)
 for i = 1:nFrames
-    clf  % Clear figure
+    clf;  % Clear figure
 
-    % Extract velocity components
+    % Extract original velocity components
     u = u_original{i,1};
     v = v_original{i,1};
-
-    % Compute magnitude
     mag{i} = sqrt(u.^2 + v.^2);
 
-    % Compute direction unit vectors
+    % Compute unit vectors
     u_unit = u ./ mag{i};
     v_unit = v ./ mag{i};
-
-    % Handle division by zero (avoid NaNs/Infs)
     u_unit(~isfinite(u_unit)) = 0;
     v_unit(~isfinite(v_unit)) = 0;
 
-    % Scale unit vectors by magnitude again (effectively same as u, v, but explicit)
+    % Scale by magnitude
     u_scaled = u_unit .* mag{i};
     v_scaled = v_unit .* mag{i};
 
+    % Interpolate to finer grid
+    U_fine = interp2(X, Y, u_scaled, X_fine, Y_fine, interpolationMethod);
+    V_fine = interp2(X, Y, v_scaled, X_fine, Y_fine, interpolationMethod);
+    magFine = interp2(X, Y, mag{i}, X_fine, Y_fine, interpolationMethod);
+
     % Flip for plotting
-    magFlipped = flipud(mag{i});
-    U = flipud(-u_scaled);
-    V = flipud(-v_scaled);
+    U = flipud(-U_fine);
+    V = flipud(-V_fine);
+    magFlipped = flipud(magFine);
 
-    % Plot magnitude as contour
-    contourf(X, Y, magFlipped, 16, 'LineStyle', 'none');
-    hold on
+    % Plot interpolated magnitude as contour
+    contourf(X_fine, Y_fine, magFlipped, 16, 'LineStyle', 'none');
+    hold on;
 
-    % Plot vectors: direction + magnitude
-    quiver(X, Y, U, V, 'k')  % 0 = no auto-scaling
+    % Plot interpolated vectors
+    quiver(X_fine, Y_fine, U, V, 1, 'k');
 
-    colorbar
-    axis equal
-    title(['Velocity magnitude and direction - Frame ', num2str(i)])
-    pause(0.1)
+    colorbar;
+    axis equal;
+    title(['Interpolated velocity field - Frame ', num2str(i)]);
+    pause(0.1);
 end
+
