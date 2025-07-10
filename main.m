@@ -1,13 +1,18 @@
 %% Plot PIVlab results and compute max velocity for each test
-clear; clc;
+close all; clear all; clc;
 f=1;
 
 % Test name and directory
-testName = 'test_1';
+testName = 'test_6';
 resultsFile = ['../', testName, '/results_', testName, '.mat'];
 load(resultsFile);
-tokens = regexp(testName, '\d+', 'match');
-k = str2double(tokens{1});
+
+% cylinder coordinate (initial)
+cylinderCenter = [0.07 0.084];
+cylinderRadius = 14/1000;  % 28 mm diameter
+theta = linspace(0, 2*pi, 100);
+xc = (cylinderCenter(1) + cylinderRadius * cos(theta));
+yc = (cylinderCenter(2) + cylinderRadius * sin(theta));
 
 
 % Number of frames
@@ -31,10 +36,11 @@ interpolationMethod = 'linear';
 
 % Preallocate
 mag = cell(nFrames, 1);
+umax = nan(nFrames,1);
 
 
-
-for i = 250:nFrames
+for i = 200:nFrames
+    
 
     % Extract original velocity components
     u = u_original{i,1};
@@ -60,21 +66,31 @@ for i = 250:nFrames
     U = flipud(-U_fine);
     V = flipud(-V_fine);
     magFlipped = flipud(magFine);
+    umax(i,1) = max(max(magFlipped));
 
      % Plot magnitude as contour and vectors
     figure(f)
-    contourf(X_fine, Y_fine, magFlipped, 8, 'LineStyle', 'none'); hold on;
-    quiver(X_fine, Y_fine, U, V, 'k');
-    colorbar;
-    clim([0 0.035])
+    % contourf(X_fine, Y_fine, magFlipped, 8, 'LineStyle', 'none'); hold on;
+    % fill(xc, yc, 'k', 'FaceAlpha', 0.3)  % 0 = fully transparent, 1 = opaque
+    quiver(X_fine, Y_fine, U, V, 5, 'k');
+    % colorbar;
+    % clim([0 0.05])
     axis equal;
-    xlim([0.0 0.12])
+    xlim([0.0 0.12]); ylim([0.05 0.15])
     title(['Interpolated velocity field - Frame ', num2str(i)]);
     pause(0.2);
-    % clf;  
 
-    
-
-    
 end
+
+fprintf('Max velocity = %.5f m/s\n', max(umax));
+
+time=linspace(0,nFrames/25,nFrames)';
+
+% figure
+% subplot(3,2,f)
+plot(time,umax); hold on;
+xlabel('Time [s]'); ylabel('Max velocity [m/s]')
+% title(sprintf('Test %i',f))
+f=f+1;
+% end
 
