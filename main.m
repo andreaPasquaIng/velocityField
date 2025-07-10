@@ -84,11 +84,12 @@ for i = 240:nFrames
     figure(f)
     % contourf(X_fine, Y_fine, magFlipped, 8, 'LineStyle', 'none'); hold on;
     % fill(xc, yc, 'k', 'FaceAlpha', 0.3)  % 0 = fully transparent, 1 = opaque
-    quiver(X_fine, Y_fine, U, V, 5, 'k');
+    quiver(X_fine, Y_fine, U, V, 5, 'g');
+    xlabel('x coordinate [m]'); ylabel('y coordinate [m]')
     % colorbar;
     % clim([0 0.05])
     axis equal;
-    xlim([0.027 0.2]); ylim([0.06 0.117])
+    xlim([0.0264 0.2184]); ylim([0.0589 0.1229-shift])
     title(['Interpolated velocity field - Frame ', num2str(i)]);
     pause(0.2);
 
