@@ -38,8 +38,20 @@ interpolationMethod = 'linear';
 mag = cell(nFrames, 1);
 umax = nan(nFrames,1);
 
+shift = 5e-3;
+for i = 240:nFrames
 
-for i = 200:nFrames
+    % get the piv image and its roi
+    rawImage = imread(sprintf('../%s/img_corrected/frame_%04d.png', testName, i)); 
+    roiRect = [261 136 934 349]; % [x y width height] in pixels - adjust this
+    roiImage = imcrop(rawImage, roiRect);
+    
+    % display piv image
+    figure(f); clf;
+    imagesc([min(xVec) max(xVec)], [min(yVec)-shift max(yVec)-shift], flipud(roiImage)); 
+    colormap gray; 
+    set(gca, 'YDir', 'normal'); % Make Y axis increase upwards
+    hold on;
     
 
     % Extract original velocity components
@@ -76,7 +88,7 @@ for i = 200:nFrames
     % colorbar;
     % clim([0 0.05])
     axis equal;
-    xlim([0.0 0.12]); ylim([0.05 0.15])
+    xlim([0.027 0.2]); ylim([0.06 0.117])
     title(['Interpolated velocity field - Frame ', num2str(i)]);
     pause(0.2);
 
