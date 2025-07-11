@@ -7,6 +7,31 @@ testName = 'test_5';
 resultsFile = ['../', testName, '/results_', testName, '.mat'];
 load(resultsFile);
 
+% swtich case for initial and final frame analysis
+testID = 1;
+switch testID
+    case 1
+        frame0 = 230;
+        frame1 = 314;
+    case 2
+        frame0 = 202;
+        frame1 = 279;
+    case 3
+        frame0 = 207;
+        frame1 = 343;
+    case 4
+        frame0 = 201;
+        frame1 = 313;
+    case 5
+        frame0 = 194;
+        frame1 = 315;
+    case 6
+        frame0 = 177;
+        frame1 = 303;
+    otherwise
+        sprintf("No Valid test_ID selected. You selected test_ID%i",testID)
+end
+
 
 % Number of frames
 nFrames = size(u_original, 1);
@@ -32,7 +57,7 @@ mag = cell(nFrames, 1);
 umax = nan(nFrames,1);
 
 shift = 5e-3;
-for i = 240:nFrames
+for i = frame0:frame1
 
     % get the piv image and its roi
     rawImage = imread(sprintf('../%s/img_corrected/frame_%04d.png', testName, i)); 
