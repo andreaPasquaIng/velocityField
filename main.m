@@ -3,37 +3,43 @@ close all; clear all; clc;
 f=1;
 
 % switch case. Get initial frame, final frame, and test name
-testID = 1;
+testID = 6;
 switch testID
     case 1
         frame0 = 230;
         frame1 = 314;
         testName = 'test_1';
+        shift = -0.0025;
 
     case 2
         frame0 = 202;
         frame1 = 279;
         testName = 'test_2';
+        shift = -0.0025;
 
     case 3
         frame0 = 207;
         frame1 = 343;
         testName = 'test_3';
+        shift = 0.005;
 
     case 4
         frame0 = 201;
         frame1 = 313;
         testName = 'test_4';
+        shift = 0.005;
 
     case 5
         frame0 = 194;
         frame1 = 315;
         testName = 'test_5';
+        shift = -0.001;
 
     case 6
         frame0 = 177;
         frame1 = 303;
         testName = 'test_6';
+        shift = -0.001;
 
     otherwise
         sprintf("No Valid test_ID selected. You selected test_ID%i",testID)
@@ -54,7 +60,7 @@ yVec = linspace(min(ySample(:)), max(ySample(:)), size(ySample,1));
 [X, Y] = meshgrid(xVec, yVec);
 
 % Define finer grid (e.g., 2x finer)
-scaleFactor = 2;
+scaleFactor = 1;
 [X_fine, Y_fine] = meshgrid( ...
     linspace(min(xVec), max(xVec), scaleFactor * size(X,2)), ...
     linspace(min(yVec), max(yVec), scaleFactor * size(Y,1)) ...
@@ -66,7 +72,7 @@ interpolationMethod = 'linear';
 mag = cell(nFrames, 1);
 umax = nan(nFrames,1);
 
-shift = 0.0;% 5e-3;
+% shift = 0.0;% 5e-3;
 for i = frame0:frame1
 
     % get the piv image and its roi
@@ -76,7 +82,7 @@ for i = frame0:frame1
     
     % display piv image
     figure(f);
-    imagesc([min(xVec) max(xVec)], [min(yVec)-shift max(yVec)-shift], flipud(roiImage)); 
+    imagesc([min(xVec) max(xVec)], [min(yVec) max(yVec)], flipud(roiImage)); 
     colormap gray; 
     set(gca, 'YDir', 'normal'); % Make Y axis increase upwards
     hold on;
@@ -110,10 +116,10 @@ for i = frame0:frame1
 
     % Plot velocity vectors
     figure(f)
-    quiver(X_fine, Y_fine, U, V, 5, 'g'); hold on;
+    quiver(X_fine, Y_fine+shift, U, V, 2, 'g'); hold on;
     xlabel('x coordinate [m]'); ylabel('y coordinate [m]')
     axis equal;
-    xlim([0.0264 0.2184]); ylim([0.0589 0.1229-shift])
+    xlim([min(min(X_fine)) max(max(X_fine))]); ylim([min(min(Y_fine)) max(max(Y_fine))])
     title(sprintf('Test_%i, Velocity field - Frame %i',testID,i),interpreter="none");
     % pause(0.2);
     % clf;
