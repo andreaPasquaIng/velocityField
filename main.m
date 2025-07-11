@@ -117,12 +117,24 @@ for i = frame0:frame1
     % Plot velocity vectors
     figure(f)
     quiver(X_fine, Y_fine+shift, U, V, 2, 'g'); hold on;
+    % clf;
+
+    % Plot velocity magnitude contours instead of streamlines
+    contourLevels = linspace(min(magFlipped(:)), max(magFlipped(:)), 15); % Adjust as needed
+    contour(X_fine, Y_fine + shift, magFlipped, contourLevels, 'LineColor', 'r', 'LineWidth', 0.15);
+
+    % axis options
     xlabel('x coordinate [m]'); ylabel('y coordinate [m]')
     axis equal;
     xlim([min(min(X_fine)) max(max(X_fine))]); ylim([min(min(Y_fine)) max(max(Y_fine))])
     title(sprintf('Test_%i, Velocity field - Frame %i',testID,i),interpreter="none");
-    % pause(0.2);
-    % clf;
+    pause(0.01);
+
+
+
+
+
+
 
 end
 
