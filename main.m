@@ -2,35 +2,45 @@
 close all; clear all; clc;
 f=1;
 
-% Test name and directory
-testName = 'test_5';
-resultsFile = ['../', testName, '/results_', testName, '.mat'];
-load(resultsFile);
-
-% swtich case for initial and final frame analysis
+% switch case. Get initial frame, final frame, and test name
 testID = 1;
 switch testID
     case 1
         frame0 = 230;
         frame1 = 314;
+        testName = 'test_1';
+
     case 2
         frame0 = 202;
         frame1 = 279;
+        testName = 'test_2';
+
     case 3
         frame0 = 207;
         frame1 = 343;
+        testName = 'test_3';
+
     case 4
         frame0 = 201;
         frame1 = 313;
+        testName = 'test_4';
+
     case 5
         frame0 = 194;
         frame1 = 315;
+        testName = 'test_5';
+
     case 6
         frame0 = 177;
         frame1 = 303;
+        testName = 'test_6';
+
     otherwise
         sprintf("No Valid test_ID selected. You selected test_ID%i",testID)
 end
+
+resultsFile = ['../', testName, '/results_', testName, '.mat'];
+load(resultsFile);
 
 
 % Number of frames
@@ -56,7 +66,7 @@ interpolationMethod = 'linear';
 mag = cell(nFrames, 1);
 umax = nan(nFrames,1);
 
-shift = 5e-3;
+shift = 0.0;% 5e-3;
 for i = frame0:frame1
 
     % get the piv image and its roi
@@ -65,7 +75,7 @@ for i = frame0:frame1
     roiImage = imcrop(rawImage, roiRect);
     
     % display piv image
-    figure(f); %clf;
+    figure(f);
     imagesc([min(xVec) max(xVec)], [min(yVec)-shift max(yVec)-shift], flipud(roiImage)); 
     colormap gray; 
     set(gca, 'YDir', 'normal'); % Make Y axis increase upwards
@@ -104,8 +114,9 @@ for i = frame0:frame1
     xlabel('x coordinate [m]'); ylabel('y coordinate [m]')
     axis equal;
     xlim([0.0264 0.2184]); ylim([0.0589 0.1229-shift])
-    title(['Velocity field - Frame ', num2str(i)]);
-    pause(0.002);
+    title(sprintf('Test_%i, Velocity field - Frame %i',testID,i),interpreter="none");
+    % pause(0.2);
+    % clf;
 
 end
 
