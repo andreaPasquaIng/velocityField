@@ -3,16 +3,9 @@ close all; clear all; clc;
 f=1;
 
 % Test name and directory
-testName = 'test_6';
+testName = 'test_5';
 resultsFile = ['../', testName, '/results_', testName, '.mat'];
 load(resultsFile);
-
-% cylinder coordinate (initial)
-cylinderCenter = [0.07 0.084];
-cylinderRadius = 14/1000;  % 28 mm diameter
-theta = linspace(0, 2*pi, 100);
-xc = (cylinderCenter(1) + cylinderRadius * cos(theta));
-yc = (cylinderCenter(2) + cylinderRadius * sin(theta));
 
 
 % Number of frames
@@ -47,7 +40,7 @@ for i = 240:nFrames
     roiImage = imcrop(rawImage, roiRect);
     
     % display piv image
-    figure(f); clf;
+    figure(f); %clf;
     imagesc([min(xVec) max(xVec)], [min(yVec)-shift max(yVec)-shift], flipud(roiImage)); 
     colormap gray; 
     set(gca, 'YDir', 'normal'); % Make Y axis increase upwards
@@ -87,19 +80,8 @@ for i = 240:nFrames
     axis equal;
     xlim([0.0264 0.2184]); ylim([0.0589 0.1229-shift])
     title(['Velocity field - Frame ', num2str(i)]);
-    pause(0.2);
+    pause(0.002);
 
 end
 
-fprintf('Max velocity = %.5f m/s\n', max(umax));
-
-time=linspace(0,nFrames/25,nFrames)';
-
-% figure
-% subplot(3,2,f)
-plot(time,umax); hold on;
-xlabel('Time [s]'); ylabel('Max velocity [m/s]')
-% title(sprintf('Test %i',f))
-f=f+1;
-% end
 
