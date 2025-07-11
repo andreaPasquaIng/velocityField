@@ -73,7 +73,7 @@ mag = cell(nFrames, 1);
 umax = nan(nFrames,1);
 
 % shift = 0.0;% 5e-3;
-for i = frame0:frame1
+for i = 230:frame1
 
     % get the piv image and its roi
     rawImage = imread(sprintf('../%s/img_corrected/frame_%04d.png', testName, i)); 
@@ -120,21 +120,15 @@ for i = frame0:frame1
     % clf;
 
     % Plot velocity magnitude contours instead of streamlines
-    contourLevels = linspace(min(magFlipped(:)), max(magFlipped(:)), 15); % Adjust as needed
-    contour(X_fine, Y_fine + shift, magFlipped, contourLevels, 'LineColor', 'r', 'LineWidth', 0.15);
+    % contourLevels = linspace(0.006, max(magFlipped(:)), 5);
+    % contour(X_fine, Y_fine + shift, magFlipped, contourLevels, 'LineColor', 'y', 'LineWidth', 0.015);
 
     % axis options
     xlabel('x coordinate [m]'); ylabel('y coordinate [m]')
     axis equal;
     xlim([min(min(X_fine)) max(max(X_fine))]); ylim([min(min(Y_fine)) max(max(Y_fine))])
     title(sprintf('Test_%i, Velocity field - Frame %i',testID,i),interpreter="none");
-    pause(0.01);
-
-
-
-
-
-
+    % pause(0.01);
 
 end
 
